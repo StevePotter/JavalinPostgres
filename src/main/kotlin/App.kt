@@ -31,7 +31,7 @@ fun main() {
             ctx.invalid(e.propertyName, "Unknown parameter")
         }
         .also { registerRoutes(it) }
-        .start(8766)
+        .start(8765)
 }
 
 fun Context.invalid(parameter: KParameter, message: String) = this.invalid(parameter.name ?: "UNKNOWN", message)

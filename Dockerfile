@@ -1,9 +1,9 @@
 FROM gradle:7.1.0-jdk11 as build
 WORKDIR /usr/app
-COPY build.gradle.kts settings.gradle.kts gradle.properties gradlew ./
-COPY gradle gradle
+COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+#COPY gradle gradle
 COPY src src
-RUN ./gradlew build
+RUN gradle build
 
 FROM amazoncorretto:16-alpine-jdk
 EXPOSE 8765

@@ -6,7 +6,7 @@ import org.ktorm.logging.LogLevel
 
 internal val database by lazy {
     Database.connect(
-        url = "jdbc:postgresql://localhost:5433/postgres",
+        url = "jdbc:postgresql://postgres:5432/postgres",
         driver = "org.postgresql.Driver",
         user = "postgres",
         password = "postgres",

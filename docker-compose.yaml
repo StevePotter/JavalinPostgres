@@ -5,11 +5,8 @@ services:
     restart: always
     volumes:
       - ./sql/create-db.sql:/docker-entrypoint-initdb.d/create-db.sql
-    expose:
-      - "5432"
-      - "5433"
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres

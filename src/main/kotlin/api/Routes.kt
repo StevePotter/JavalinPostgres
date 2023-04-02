@@ -44,7 +44,7 @@ fun registerRoutes(app: Javalin): Javalin {
     }
     app.post("/logout") { ctx ->
         val request: LogoutRequest = ctx.bodyAsClass()
-        when (val result = UserService.logout(apiToken = request.apiToken)) {
+        when (UserService.logout(apiToken = request.apiToken)) {
             is LogoutResult.Success -> {
                 ctx.status(HttpStatus.OK).result("Bye!")
             }
