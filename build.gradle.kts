@@ -1,28 +1,35 @@
 plugins {
     kotlin("jvm") version "1.8.10"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
 }
 
-tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile::class.java) {
-    compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-}
-//tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask> {
-//    compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-//}
-//tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile> {
-//    kotlinOptions.jvmTarget = "1.8"
-//}
-//
-//tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile::class.java) {
-//    compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
-//}
+tasks {
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile> {
+        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    }
 
+    withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+        archiveBaseName.set("app")
+        archiveClassifier.set("")
+        archiveVersion.set("")
+    }
+
+    withType<Jar> {
+        manifest {
+            attributes["Main-Class"] = "AppKt"
+        }
+    }
+
+    build {
+        dependsOn(shadowJar)
+    }
+}
 
 dependencies {
     implementation(kotlin("stdlib"))

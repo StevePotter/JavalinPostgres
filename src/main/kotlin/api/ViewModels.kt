@@ -20,14 +20,6 @@ data class User(
     val createdAt: Instant,
 )
 
-fun UserEntity?.toViewModel(): User? = this?.let {
-    User(
-        id = it.id,
-        email = it.email,
-        createdAt = it.createdAt
-    )
-}
-
 data class UserCreateRequest(
     val email: String,
     val password: String

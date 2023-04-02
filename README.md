@@ -4,6 +4,13 @@
 
 Because of limited time, I stopped after meeting the requirements.  But there's so much more I would do if I had the time.  In no particular order:
 
+## Running the app
+
+docker build -t arrayapp .
+
+docker run -p 8765:8765 arrayapp
+
+
 ### Self-describing API
 
 I would use Open API to define the service API.  With that, we could:
@@ -17,6 +24,7 @@ I got a litle lazy with the validation after not finding a good turnkey solution
 Auth
 session vs oauth jwt api key oh my
 RBAC
+- Tests
 - Logging
 - DB creds
 - Use oauth2
