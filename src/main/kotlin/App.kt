@@ -1,28 +1,65 @@
+
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import io.javalin.Javalin
-import org.ktorm.database.Database
-import org.ktorm.dsl.forEach
-import org.ktorm.dsl.from
-import org.ktorm.dsl.select
+import io.javalin.http.HttpStatus
+import io.javalin.http.bodyAsClass
+import io.javalin.json.JavalinJackson
+import io.javalin.validation.ValidationException
 
 fun main() {
+    val userService = UserService()
+
     val app = Javalin.create {
         it.showJavalinBanner = false
-    }
-        .get("/") { ctx -> ctx.result("Hello World") }
-        .get("/users") {
-            val database = Database.connect(
-                url = "jdbc:postgresql://localhost:5433/postgres",
-                driver = "org.postgresql.Driver",
-                user = "postgres",
-                password = "postgres"
+        it.jsonMapper(
+            JavalinJackson(
+                jacksonMapperBuilder()
+                .addModule(JavaTimeModule())
+                .build()
             )
-            database.from(Users).select().forEach { row ->
-                println(row[Users.email])
+        )
+    }
+        .post("/users") { ctx ->
+            ValidationException()
+            val userRequest = ctx.bodyValidator<UserCreateRequest>()
+                .check({ validateUser(it) })
+                .get()
+            when (userService.createUser(email = userRequest.email, password = userRequest.password)) {
+                is CreateUserResult.Success -> {
+                    ctx.status(HttpStatus.CREATED)
+                }
+                is CreateUserResult.AlreadyExists -> {
+                    ctx.status(HttpStatus.CONFLICT)
+                    ctx.result("Someone already signed up with that email.")
+                }
             }
-
         }
-        .get("/json") { ctx -> ctx.json(Result("hel"))}
+//        .routes {
+//            path("users") {
+//                path("{id}") {
+//                    get {
+//
+//                    }
+//                }
+//            }
+//        }
+//        .get("/") { ctx -> ctx.result("Hello World") }
+//
+//        .get("/users") {
+//            val user = userService.getUserByEmail("me@stevepotter.me").toViewModel()
+//            if (user != null)
+//                it.json(user)
+//
+//        }
+//        .get("/json") { ctx -> ctx.json(Result("hel"))}
         .start(8765)
 }
 
-data class Result(val name: String)
+private fun UserEntity?.toViewModel(): User? = this?.let {
+    User(
+        id = it.id,
+        email = it.email,
+        createdAt = it.createdAt
+    )
+}
