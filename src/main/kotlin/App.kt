@@ -1,65 +1,43 @@
 
+import api.ValidationErrors
+import api.registerRoutes
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import io.javalin.Javalin
+import io.javalin.http.Context
 import io.javalin.http.HttpStatus
-import io.javalin.http.bodyAsClass
 import io.javalin.json.JavalinJackson
-import io.javalin.validation.ValidationException
+import kotlin.reflect.KParameter
+import kotlin.reflect.KProperty
 
 fun main() {
-    val userService = UserService()
-
-    val app = Javalin.create {
-        it.showJavalinBanner = false
-        it.jsonMapper(
-            JavalinJackson(
-                jacksonMapperBuilder()
-                .addModule(JavaTimeModule())
-                .build()
+    Javalin
+        .create { config ->
+            config.showJavalinBanner = false
+            config.jsonMapper(
+                JavalinJackson(
+                    jacksonMapperBuilder()
+                        .addModule(JavaTimeModule())
+                        .build()
+                )
             )
-        )
-    }
-        .post("/users") { ctx ->
-            ValidationException()
-            val userRequest = ctx.bodyValidator<UserCreateRequest>()
-                .check({ validateUser(it) })
-                .get()
-            when (userService.createUser(email = userRequest.email, password = userRequest.password)) {
-                is CreateUserResult.Success -> {
-                    ctx.status(HttpStatus.CREATED)
-                }
-                is CreateUserResult.AlreadyExists -> {
-                    ctx.status(HttpStatus.CONFLICT)
-                    ctx.result("Someone already signed up with that email.")
-                }
-            }
         }
-//        .routes {
-//            path("users") {
-//                path("{id}") {
-//                    get {
-//
-//                    }
-//                }
-//            }
-//        }
-//        .get("/") { ctx -> ctx.result("Hello World") }
-//
-//        .get("/users") {
-//            val user = userService.getUserByEmail("me@stevepotter.me").toViewModel()
-//            if (user != null)
-//                it.json(user)
-//
-//        }
-//        .get("/json") { ctx -> ctx.json(Result("hel"))}
+        .exception(MissingKotlinParameterException::class.java) { e, ctx ->
+            ctx.invalid(e.parameter, "Missing parameter")
+        }
+        .exception(UnrecognizedPropertyException::class.java) { e, ctx ->
+            ctx.invalid(e.propertyName, "Unknown parameter")
+        }
+        .also { registerRoutes(it) }
         .start(8765)
 }
 
-private fun UserEntity?.toViewModel(): User? = this?.let {
-    User(
-        id = it.id,
-        email = it.email,
-        createdAt = it.createdAt
-    )
-}
+fun Context.invalid(parameter: KParameter, message: String) = this.invalid(parameter.name ?: "UNKNOWN", message)
+
+fun <T> Context.invalid(property: KProperty<T>, message: String) = this.invalid(property.name, message)
+
+fun Context.invalid(parameter: String, message: String) = this.invalid(ValidationErrors(mapOf(parameter to listOf(message))))
+
+fun Context.invalid(errors: ValidationErrors) = this.status(HttpStatus.BAD_REQUEST).json(errors)

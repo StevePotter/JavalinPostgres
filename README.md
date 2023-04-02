@@ -14,7 +14,11 @@ I would use Open API to define the service API.  With that, we could:
 Validation
 I got a litle lazy with the validation after not finding a good turnkey solution.  
 
-
+Auth
+session vs oauth jwt api key oh my
+RBAC
+- Logging
+- DB creds
 - Use oauth2
 - Integration tests
 - Database migrations
