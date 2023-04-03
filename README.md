@@ -1,4 +1,31 @@
 
+## Run it
+
+```
+docker compose up
+```
+
+Then POST /users with this body:
+```
+{
+    "email": "myemail@myemail.me",
+    "password": "testAS81!!ash"
+}
+```
+
+## Stack
+
+- Kotlin
+- Gradle with Kotlin DSL
+- [Javalin web framework](https://javalin.io)
+- [KTorm OPR](https://www.ktorm.org/)
+- Postgres
+- Docker
+
+All the latest and greatest versions as of 4/4/23
+
+Just a few routes for signup, login, and logout
+
 
 ## Where to go from here?
 
