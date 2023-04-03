@@ -6,6 +6,19 @@ Because of limited time, I stopped after meeting the requirements.  But there's 
 
 ## Running the app
 
+
+### Running all locally
+
+`docker compose up postgres`
+Then you start app using IntelliJ
+
+Want to build and run in the CLI?
+```
+./gradlew build 
+java -jar build/libs/app.jar
+```
+
+
 docker build -t arrayapp .
 
 docker run -p 8765:8765 arrayapp

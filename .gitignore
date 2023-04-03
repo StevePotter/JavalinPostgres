@@ -76,6 +76,7 @@ local.properties
 buildSrcTmp/
 distTmp/
 outTmp/
+bin/
 /test.output
 /kotlin-native/dist
 kotlin-ide/

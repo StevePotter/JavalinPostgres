@@ -1,6 +1,10 @@
 FROM gradle:7.1.0-jdk11 as build
 WORKDIR /usr/app
 COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+# Only download dependencies
+# Eat the expected build failure since no source code has been copied yet
+RUN gradle clean build > /dev/null 2>&1 || true
+
 #COPY gradle gradle
 COPY src src
 RUN gradle build

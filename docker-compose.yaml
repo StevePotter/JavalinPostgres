@@ -17,3 +17,6 @@ services:
       - postgres
     ports:
       - "8765:8765"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
