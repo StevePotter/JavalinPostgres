@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="WebApp" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="AppKt" />
+    <module name="ArrayProject.main" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

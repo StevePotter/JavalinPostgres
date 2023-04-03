@@ -1,17 +1,4 @@
-
-## Run it
-
-```
-docker compose up
-```
-
-Then POST /users with this body:
-```
-{
-    "email": "myemail@myemail.me",
-    "password": "testAS81!!ash"
-}
-```
+A weekend project to set up a tiny REST API using Kotlin.  Just a few routes for signup, login, and logout.
 
 ## Stack
 
@@ -22,60 +9,91 @@ Then POST /users with this body:
 - Postgres
 - Docker
 
-All the latest and greatest versions as of 4/4/23
+All the latest and greatest versions as of this commit
 
-Just a few routes for signup, login, and logout
+## Run it
 
+```
+docker compose up
+```
 
-## Where to go from here?
+The all runs on port 8765
 
-Because of limited time, I stopped after meeting the requirements.  But there's so much more I would do if I had the time.  In no particular order:
+Then POST /users with this body:
+```
+{
+    "email": "myemail@myemail.me",
+    "password": "testAS81!!ash"
+}
+```
 
-## Running the app
+## Development
 
+To start the app, you'll need a running Postgres server.  To start it up:
+```
+docker compose up postgres
+```
+The schema is created in `sql/create-db.sql`
 
-### Running all locally
+I used Amazon Correct 19 for the JDK.  I suggest you do the same.
 
-`docker compose up postgres`
-Then you start app using IntelliJ
+If you are using IntelliJ, there is a run configuration set up for you called WebApp.
 
-Want to build and run in the CLI?
+If you want to build and run using CLI:
 ```
 ./gradlew build 
 java -jar build/libs/app.jar
 ```
 
+To build the app's dockerfile:
+```
+docker build -t javalin-app .
+```
 
-docker build -t arrayapp .
+You can then run this via
+```
+docker run -p 8765:8765 javalin-app
 
-docker run -p 8765:8765 arrayapp
+```
 
-### Running Postman Tests
+### Running Postman tests
 
+There is a small package of test requests.  To run those:
+```
 newman run test/tests.postman_collection.json
+```
 
-### Self-describing API
+## What's missing?
+
+This is a decent starting point for a web app.  But there is so much more that would need to be done in order to make it production-grade.  In no particular order:
+
+**Auth**
+
+This app uses simple password hashing with a salt and API tokens provided in the request body.  Don't use that.  Sleep better and give users a better experience with something like OAuth 2.  Decide between using API keys, sessions, JWTs (or some hybrid).  Make your life easier by using a service like Okta or the great products offered by every cloud provider.
+
+[Here](https://developer.okta.com/blog/2020/10/19/ktor-kotlin) is a nice article although it's it a bit heavy on the marketing side for Okta.
+
+**Self-describing API**
 
 I would use Open API to define the service API.  With that, we could:
 1. Generate request/response payload classes
 2. Generate routing code on the server
 3. Create clients in multiple languages.  A CI/CD process would generate, test, and publish these to various repositories.
 
-Validation
-I got a litle lazy with the validation after not finding a good turnkey solution.  
+**Validation**
 
-Auth
-session vs oauth jwt api key oh my
-RBAC
-- Tests
+I got a little lazy with the validation after not finding a good turnkey solution.  Every input field should be validated and it should be simple for devs to configure it.
+
+**Tests**
+
+Tests are missing.  Given time, I would add unit test coverage.  More importantly, I would implement full integration tests that use a live database with seed data.
+
+**More**
+
 - Logging
-- DB creds
-- Use oauth2
-- Integration tests
 - Database migrations
 - Frontend
-- Strict linting
-- Better exception handling
 - Idempotency
 - Profiling
 - Monitoring
+- CI/CD
