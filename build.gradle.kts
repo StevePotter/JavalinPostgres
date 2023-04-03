@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.8.10"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    application
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 version = "1.0"
@@ -9,21 +10,19 @@ repositories {
     mavenCentral()
 }
 
-tasks {
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile> {
-        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-    }
+kotlin {
+    jvmToolchain(19)
+}
 
+application {
+    mainClass.set("AppKt")
+}
+
+tasks {
     withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         archiveBaseName.set("app")
         archiveClassifier.set("")
         archiveVersion.set("")
-    }
-
-    withType<Jar> {
-        manifest {
-            attributes["Main-Class"] = "AppKt"
-        }
     }
 
     build {
