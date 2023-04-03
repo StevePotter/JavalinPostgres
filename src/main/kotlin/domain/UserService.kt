@@ -50,8 +50,8 @@ object UserService {
     }
 }
 
-fun generateSalt(size: Int = 16): String {
-    val salt = ByteArray(size)
+fun generateSalt(): String {
+    val salt = ByteArray(16)
     SecureRandom().nextBytes(salt)
     return Base64.getEncoder().encodeToString(salt)
 }

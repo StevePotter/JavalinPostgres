@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
+import data.initializeDatabase
 import io.javalin.Javalin
 import io.javalin.http.Context
 import io.javalin.http.HttpStatus
@@ -13,6 +14,8 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
 
 fun main() {
+    initializeDatabase()
+
     Javalin
         .create { config ->
             config.showJavalinBanner = false

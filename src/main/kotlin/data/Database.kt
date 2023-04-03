@@ -4,11 +4,13 @@ import org.ktorm.database.Database
 import org.ktorm.logging.ConsoleLogger
 import org.ktorm.logging.LogLevel
 
+fun initializeDatabase() {
+    database
+}
+
 internal val database by lazy {
     val host = System.getenv("DB_HOST") ?: "localhost"
-    val port = System.getenv("DB_PORT") ?: "5432"
-
-    println("jdbc:postgresql://$host:$port/postgres")
+    val port = System.getenv("DB_PORT") ?: "5433"
 
     Database.connect(
         url = "jdbc:postgresql://$host:$port/postgres",

@@ -23,6 +23,9 @@ docker build -t arrayapp .
 
 docker run -p 8765:8765 arrayapp
 
+### Running Postman Tests
+
+newman run test/tests.postman_collection.json
 
 ### Self-describing API
 
